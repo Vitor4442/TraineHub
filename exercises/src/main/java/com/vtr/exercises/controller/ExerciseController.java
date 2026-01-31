@@ -4,6 +4,7 @@ import com.vtr.exercises.dto.ExerciseDTO;
 import com.vtr.exercises.service.ExerciseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ExerciseController {
     private final ExerciseService service;
 
-    @GetMapping
+    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<CollectionModel<ExerciseDTO>> findAllExercises() {
         List<ExerciseDTO> exercise = service.getAllExercises();
 
@@ -33,27 +34,29 @@ public class ExerciseController {
         return ResponseEntity.ok(collectionModel);
     }
 
-    @PostMapping
+    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
     public ResponseEntity<ExerciseDTO> addExercise(@RequestBody ExerciseDTO exerciseDTO) {
         ExerciseDTO savedExercise = service.AddExercise(exerciseDTO);
         addLinksToExercise(savedExercise);
         return ResponseEntity.status(201).body(savedExercise);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value="/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}, consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ExerciseDTO> attExercise(@PathVariable Long id, @RequestBody ExerciseDTO exerciseDTO) {
         ExerciseDTO exercise = service.attExercise(id, exerciseDTO);
         addLinksToExercise(exercise);
         return ResponseEntity.ok(exercise);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value="/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}, consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ExerciseDTO> deletedExercise(@PathVariable Long id) {
         service.deleteExercise(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value="/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<ExerciseDTO> findByIdExercise(@PathVariable Long id) {
         ExerciseDTO exercise = service.findById(id);
         addLinksToExercise(exercise);

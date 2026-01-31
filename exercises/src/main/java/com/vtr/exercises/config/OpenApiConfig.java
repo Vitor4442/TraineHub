@@ -10,16 +10,20 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
 
     @Bean
-    OpenAPI customOpenApi(){
+    OpenAPI customOpenApi() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("REST API's RESTful from 0 with Java, Spring Boot, Kubertenes and Docker")
+                        .title("Trainer Hub API")
                         .version("v1")
-                        .description("REST API's RESTful from 0 with Java, Spring Boot, Kubertenes and Docker")
-                        .termsOfService("e meu")
+                        .description("""
+                                RESTful API for managing trainers, workouts, exercises
+                                and performance tracking within the Trainer Hub platform.
+                                """)
+                        .termsOfService("https://trainerhub.com/terms")
                         .license(new License()
-                                .name("Apache 2.0")
-                                .url("link"))
+                                .name("Apache License 2.0")
+                                .url("https://www.apache.org/licenses/LICENSE-2.0"))
                 );
+
     }
 }

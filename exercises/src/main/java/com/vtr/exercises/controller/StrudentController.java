@@ -38,4 +38,10 @@ public class StrudentController {
         return ResponseEntity.noContent().build(); // HTTP 204
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<StudentDTO> findByIdStudent(@PathVariable Long id){
+        StudentDTO student = service.findByIdStudent(id);
+        return ResponseEntity.ok(student);
+    }
+
 }

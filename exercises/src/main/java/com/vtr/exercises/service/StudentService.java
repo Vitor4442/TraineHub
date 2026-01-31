@@ -37,8 +37,15 @@ public class StudentService {
         return mapper.toDTo(repository.save(student));
     }
 
+    @Transactional
     public void deleteStudent(Long id) {
         Student student = repository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
         repository.delete(student);
+    }
+
+    @Transactional(readOnly = true)
+    public StudentDTO findByIdStudent(Long id) {
+        Student student = repository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+        return mapper.toDTo(student);
     }
 }

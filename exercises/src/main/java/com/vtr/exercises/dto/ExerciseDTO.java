@@ -1,15 +1,13 @@
 package com.vtr.exercises.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ExerciseDTO {
+public class ExerciseDTO extends RepresentationModel<ExerciseDTO> {
+    private Long id;
     private String name;
     private String primaryMuscle;
     private String equipment;
@@ -17,6 +15,7 @@ public class ExerciseDTO {
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 
 
 }

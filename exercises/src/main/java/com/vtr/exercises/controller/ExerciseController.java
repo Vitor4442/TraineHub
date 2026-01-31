@@ -3,10 +3,15 @@ package com.vtr.exercises.controller;
 import com.vtr.exercises.dto.ExerciseDTO;
 import com.vtr.exercises.service.ExerciseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,29 +20,57 @@ public class ExerciseController {
     private final ExerciseService service;
 
     @GetMapping
-    public ResponseEntity<List<ExerciseDTO>> findAllExercises(){
-        return ResponseEntity.ok( service.getAllExercises());
+    public ResponseEntity<CollectionModel<ExerciseDTO>> findAllExercises() {
+        List<ExerciseDTO> exercise = service.getAllExercises();
+
+        for (ExerciseDTO exerciseDTO : exercise) {
+            addLinksToExercise(exerciseDTO);
+        }
+
+        CollectionModel<ExerciseDTO> collectionModel = CollectionModel.of(exercise);
+        collectionModel.add(linkTo(methodOn(ExerciseController.class).findAllExercises()).withSelfRel());
+
+        return ResponseEntity.ok(collectionModel);
     }
 
     @PostMapping
-    public ResponseEntity<ExerciseDTO> addExercise(@RequestBody ExerciseDTO exerciseDTO){
-        ExerciseDTO  savedExercise = service.AddExercise(exerciseDTO);
+    public ResponseEntity<ExerciseDTO> addExercise(@RequestBody ExerciseDTO exerciseDTO) {
+        ExerciseDTO savedExercise = service.AddExercise(exerciseDTO);
+        addLinksToExercise(savedExercise);
         return ResponseEntity.status(201).body(savedExercise);
     }
 
-    @PutMapping ("/{id}")
-    public ResponseEntity<ExerciseDTO>  attExercise (@PathVariable Long id, @RequestBody ExerciseDTO exerciseDTO){
-       return ResponseEntity.ok(service.attExercise(id, exerciseDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<ExerciseDTO> attExercise(@PathVariable Long id, @RequestBody ExerciseDTO exerciseDTO) {
+        ExerciseDTO exercise = service.attExercise(id, exerciseDTO);
+        addLinksToExercise(exercise);
+        return ResponseEntity.ok(exercise);
     }
 
-    @DeleteMapping ("/{id}")
-    public ResponseEntity<Void> deletedExercise (@PathVariable Long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ExerciseDTO> deletedExercise(@PathVariable Long id) {
         service.deleteExercise(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping ("/{id}")
-    public ResponseEntity<ExerciseDTO> findByIdExercise (@PathVariable Long id){
-        return ResponseEntity.ok(service.findById(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<ExerciseDTO> findByIdExercise(@PathVariable Long id) {
+        ExerciseDTO exercise = service.findById(id);
+        addLinksToExercise(exercise);
+        return ResponseEntity.ok(exercise);
+    }
+
+    private void addLinksToExercise(ExerciseDTO exercise) {
+        exercise.add(linkTo(methodOn(ExerciseController.class)
+                .findByIdExercise(exercise.getId())).withSelfRel());
+
+        exercise.add(linkTo(methodOn(ExerciseController.class)
+                .attExercise(exercise.getId(), exercise)).withRel("update"));
+
+        exercise.add(linkTo(methodOn(ExerciseController.class)
+                .deletedExercise(exercise.getId())).withRel("delete"));
+
+        exercise.add(linkTo(methodOn(ExerciseController.class)
+                .findAllExercises()).withRel("all-exercises"));
     }
 }

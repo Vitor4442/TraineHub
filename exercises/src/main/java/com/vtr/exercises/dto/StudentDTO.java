@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-public class dto {
+public class StudentDTO {
     private String name;
     private String email;
     private String phone;

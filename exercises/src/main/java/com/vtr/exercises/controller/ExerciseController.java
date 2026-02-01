@@ -1,7 +1,9 @@
 package com.vtr.exercises.controller;
 
+import com.vtr.exercises.controller.docs.ExerciseControllerDocs;
 import com.vtr.exercises.dto.ExerciseDTO;
 import com.vtr.exercises.service.ExerciseService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
@@ -17,10 +19,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/exercicios")
-public class ExerciseController {
+@Tag(name = "Exercicios", description = "Endpoints para Gerenciar os Exercicios")
+public class ExerciseController implements ExerciseControllerDocs {
+
     private final ExerciseService service;
 
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @Override
     public ResponseEntity<CollectionModel<ExerciseDTO>> findAllExercises() {
         List<ExerciseDTO> exercise = service.getAllExercises();
 
@@ -37,6 +42,7 @@ public class ExerciseController {
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
+    @Override
     public ResponseEntity<ExerciseDTO> addExercise(@RequestBody ExerciseDTO exerciseDTO) {
         ExerciseDTO savedExercise = service.AddExercise(exerciseDTO);
         addLinksToExercise(savedExercise);

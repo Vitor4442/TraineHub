@@ -80,6 +80,11 @@ public class StrudentController implements StrudentControllerDocs {
         return ResponseEntity.ok(student);
     }
 
+    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE }, value = "/imc/{id}")
+    public ResponseEntity<StudentDTO> getIMCStudent(@PathVariable Long id){
+        StudentDTO student = service.calcIMCByStudent(id);
+    }
+
     private void addLinksToExercise(StudentDTO student) {
         student.add(linkTo(methodOn(StrudentController.class)
                 .findByIdStudent(student.getId())).withSelfRel());

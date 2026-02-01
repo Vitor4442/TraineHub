@@ -4,18 +4,17 @@ import com.vtr.exercises.controller.docs.StrudentControllerDocs;
 import com.vtr.exercises.dto.StudentDTO;
 import com.vtr.exercises.model.Student;
 import com.vtr.exercises.service.StudentService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/alunos")
@@ -32,6 +31,7 @@ public class StrudentController implements StrudentControllerDocs {
     @Override
     public ResponseEntity<StudentDTO> addStudent(@RequestBody Student student){
         StudentDTO savedStudent = service.addStudent(student);
+        addLinksToExercise(savedStudent);
         return ResponseEntity.status(201).body(savedStudent);
     }
 
@@ -39,8 +39,17 @@ public class StrudentController implements StrudentControllerDocs {
     @GetMapping(
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Override
-    public ResponseEntity<List<StudentDTO>> findAllStudents(){
-        return ResponseEntity.ok(service.findAllStudents());
+    public ResponseEntity<CollectionModel<StudentDTO>> findAllStudents(){
+
+        List<StudentDTO> student =  service.findAllStudents();
+        for(StudentDTO students : student){
+            addLinksToExercise(students);
+        }
+
+        CollectionModel<StudentDTO> collectionModel = CollectionModel.of(student);
+        collectionModel.add(linkTo(methodOn(StrudentController.class).findAllStudents()).withSelfRel());
+
+        return ResponseEntity.ok(collectionModel);
     }
 
     @PutMapping(produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE },
@@ -49,7 +58,9 @@ public class StrudentController implements StrudentControllerDocs {
     )
     @Override
     public ResponseEntity<StudentDTO> putStudent(@RequestBody StudentDTO studentDTO, @PathVariable Long id) {
-        return ResponseEntity.ok( service.putStudent(id, studentDTO));
+        StudentDTO student = service.putStudent(id, studentDTO);
+        addLinksToExercise(student);
+        return ResponseEntity.ok(student);
     }
 
     @DeleteMapping(produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE },
@@ -58,14 +69,28 @@ public class StrudentController implements StrudentControllerDocs {
     @Override
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         service.deleteStudent(id);
-        return ResponseEntity.noContent().build(); // HTTP 204
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE }, value = "/{id}")
     @Override
     public ResponseEntity<StudentDTO> findByIdStudent(@PathVariable Long id){
         StudentDTO student = service.findByIdStudent(id);
+        addLinksToExercise(student);
         return ResponseEntity.ok(student);
     }
 
+    private void addLinksToExercise(StudentDTO student) {
+        student.add(linkTo(methodOn(StrudentController.class)
+                .findByIdStudent(student.getId())).withSelfRel());
+
+        student.add(linkTo(methodOn(StrudentController.class)
+                .putStudent(student, student.getId())).withRel("update"));
+
+        student.add(linkTo(methodOn(StrudentController.class)
+                .deleteStudent(student.getId())).withRel("delete"));
+
+        student.add(linkTo(methodOn(StrudentController.class)
+                .findAllStudents()).withRel("all-exercises"));
+    }
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+//@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/alunos")
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class StrudentController implements StrudentControllerDocs {
         return ResponseEntity.status(201).body(savedStudent);
     }
 
-
+    
     @GetMapping(
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Override
@@ -78,11 +79,6 @@ public class StrudentController implements StrudentControllerDocs {
         StudentDTO student = service.findByIdStudent(id);
         addLinksToExercise(student);
         return ResponseEntity.ok(student);
-    }
-
-    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE }, value = "/imc/{id}")
-    public ResponseEntity<StudentDTO> getIMCStudent(@PathVariable Long id){
-        StudentDTO student = service.calcIMCByStudent(id);
     }
 
     private void addLinksToExercise(StudentDTO student) {

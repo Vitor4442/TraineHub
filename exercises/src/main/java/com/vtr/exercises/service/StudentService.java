@@ -52,7 +52,7 @@ public class StudentService {
     @Transactional
     public StudentDTO disableStudent(Long id) {
         Student student = repository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
-        student.setActive(Boolean.FALSE);
+        repository.disableStudent(id);
         return mapper.toDTo(student);
     }
 }

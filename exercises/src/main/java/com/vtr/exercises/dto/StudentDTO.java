@@ -21,4 +21,5 @@ public class StudentDTO extends RepresentationModel<StudentDTO> {
     private String medicalNotes;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Boolean active;
 }

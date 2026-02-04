@@ -28,6 +28,7 @@ public class Workout {
     @Column(length = 50)
     private String reps;
 
+    @Column(name = "advanced_technique")
     private String advancedTecnique;
 
     @Column(length = 50)

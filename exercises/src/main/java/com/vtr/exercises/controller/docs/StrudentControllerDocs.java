@@ -76,4 +76,18 @@ public interface StrudentControllerDocs {
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content)
     })
     ResponseEntity<StudentDTO> findByIdStudent(@PathVariable Long id);
+
+    @Operation(summary = "Disable Student", description = "Disabilita o estudante selecionado", tags = {"Students"}, responses = {
+            @ApiResponse(description = "Success",
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StudentDTO.class)
+                    )),
+            @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+            @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
+            @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+            @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content)
+    })
+    ResponseEntity<StudentDTO> disable(@PathVariable Long id);
 }

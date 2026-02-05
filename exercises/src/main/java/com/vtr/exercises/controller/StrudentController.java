@@ -81,7 +81,9 @@ public class StrudentController implements StrudentControllerDocs {
         return ResponseEntity.ok(student);
     }
 
+
     @PatchMapping(produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE }, value = "/desativar/{id}")
+    @Override
     public ResponseEntity<StudentDTO> disable(@PathVariable Long id){
         StudentDTO studentDTO = service.disableStudent(id);
         addLinksToExercise(studentDTO);

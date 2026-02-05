@@ -49,7 +49,7 @@ public class StrudentController implements StrudentControllerDocs {
         Pageable pageable = PageRequest.of(page, size);
         Page<StudentDTO> students = service.findAllStudents(pageable);
 
-        students.forEach(this::addLinksToExercise); // Use o seu método de links já existente
+        students.forEach(this::addLinksToExercise);
         return ResponseEntity.ok(assembler.toModel(students));
     }
 

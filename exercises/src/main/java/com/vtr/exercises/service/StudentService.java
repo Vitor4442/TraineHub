@@ -5,8 +5,6 @@ import com.vtr.exercises.mapper.StudentMapper;
 import com.vtr.exercises.model.Student;
 import com.vtr.exercises.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.Mapper;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

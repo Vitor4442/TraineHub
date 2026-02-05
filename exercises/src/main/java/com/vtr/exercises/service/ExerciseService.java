@@ -5,6 +5,8 @@ import com.vtr.exercises.mapper.ExerciseMapper;
 import com.vtr.exercises.model.Exercises;
 import com.vtr.exercises.repository.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +20,9 @@ public class ExerciseService {
     private final ExerciseRepository repository;
 
     @Transactional(readOnly = true)
-    public List<ExerciseDTO> getAllExercises (){
-      return repository.findAll().stream().map(mapper::toDTO).toList();
+    public Page<ExerciseDTO> getAllExercises (Pageable pageable){
+        var exercises = repository.findAll(pageable);
+        return exercises.map(mapper::toDTO);
     }
 
     @Transactional

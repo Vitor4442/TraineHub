@@ -5,10 +5,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 public interface ExerciseControllerDocs {
@@ -38,7 +39,8 @@ public interface ExerciseControllerDocs {
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content)
     })
-    ResponseEntity<CollectionModel<ExerciseDTO>> findAllExercises();
+    ResponseEntity<Page<ExerciseDTO>> findAllExercises(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                                         @RequestParam(value = "size", defaultValue = "12") Integer size);
 
     @Operation(summary = "Atualizar e Exercicio", description = "Essa requisição ira Atualizar o exercicio selecionado", tags = {"Exercicios"}, responses = {
             @ApiResponse(description = "Success",

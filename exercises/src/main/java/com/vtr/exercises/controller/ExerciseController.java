@@ -5,12 +5,13 @@ import com.vtr.exercises.dto.ExerciseDTO;
 import com.vtr.exercises.service.ExerciseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -22,20 +23,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ExerciseController implements ExerciseControllerDocs {
 
     private final ExerciseService service;
+    private final PagedResourcesAssembler<ExerciseDTO> assembler;
 
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Override
-    public ResponseEntity<CollectionModel<ExerciseDTO>> findAllExercises() {
-        List<ExerciseDTO> exercise = service.getAllExercises();
-
-        for (ExerciseDTO exerciseDTO : exercise) {
-            addLinksToExercise(exerciseDTO);
-        }
-
-        CollectionModel<ExerciseDTO> collectionModel = CollectionModel.of(exercise);
-        collectionModel.add(linkTo(methodOn(ExerciseController.class).findAllExercises()).withSelfRel());
-
-        return ResponseEntity.ok(collectionModel);
+    public ResponseEntity<Page<ExerciseDTO>> findAllExercises(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                              @RequestParam(value = "size", defaultValue = "12") Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ExerciseDTO> exercises = service.getAllExercises(pageable);
+        exercises.forEach(this::addLinksToExercise);
+        return ResponseEntity.ok(exercises);
     }
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
@@ -79,6 +76,6 @@ public class ExerciseController implements ExerciseControllerDocs {
                 .deletedExercise(exercise.getId())).withRel("delete"));
 
         exercise.add(linkTo(methodOn(ExerciseController.class)
-                .findAllExercises()).withRel("all-exercises"));
+                .findAllExercises(0, 12)).withRel("all-exercises"));
     }
 }

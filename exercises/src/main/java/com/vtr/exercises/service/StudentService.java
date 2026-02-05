@@ -5,10 +5,12 @@ import com.vtr.exercises.mapper.StudentMapper;
 import com.vtr.exercises.model.Student;
 import com.vtr.exercises.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Mapper;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,11 +25,9 @@ public class StudentService {
     }
 
     @Transactional(readOnly = true)
-    public List<StudentDTO> findAllStudents(){
-        return repository.findAll()
-                .stream()
-                .map(mapper::toDTo)
-                .toList();
+    public Page<StudentDTO> findAllStudents(Pageable pageable){
+        var student = repository.findAll(pageable);
+        return student.map(mapper::toDTo);
     }
 
     @Transactional

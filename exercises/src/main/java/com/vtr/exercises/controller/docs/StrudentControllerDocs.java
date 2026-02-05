@@ -7,7 +7,8 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,8 +40,8 @@ public interface StrudentControllerDocs {
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content)
     })
-    ResponseEntity<CollectionModel<StudentDTO>> findAllStudents();
-
+    ResponseEntity<PagedModel<EntityModel<StudentDTO>>> findAllStudents(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                           @RequestParam(value = "size", defaultValue = "12") Integer size);
     @Operation(summary = "Put Student", description = "Atualiza o estudante", tags = {"Students"}, responses = {
             @ApiResponse(description = "Success",
                     responseCode = "200",

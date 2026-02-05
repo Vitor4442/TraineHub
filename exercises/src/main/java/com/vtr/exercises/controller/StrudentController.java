@@ -6,12 +6,15 @@ import com.vtr.exercises.model.Student;
 import com.vtr.exercises.service.StudentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -24,6 +27,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class StrudentController implements StrudentControllerDocs {
 
     private final StudentService service;
+    private final PagedResourcesAssembler<StudentDTO> assembler;
 
     @PostMapping(
             produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE },
@@ -40,17 +44,13 @@ public class StrudentController implements StrudentControllerDocs {
     @GetMapping(
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Override
-    public ResponseEntity<CollectionModel<StudentDTO>> findAllStudents(){
+    public ResponseEntity<PagedModel<EntityModel<StudentDTO>>> findAllStudents(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                                               @RequestParam(value = "size", defaultValue = "12") Integer size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<StudentDTO> students = service.findAllStudents(pageable);
 
-        List<StudentDTO> student =  service.findAllStudents();
-        for(StudentDTO students : student){
-            addLinksToExercise(students);
-        }
-
-        CollectionModel<StudentDTO> collectionModel = CollectionModel.of(student);
-        collectionModel.add(linkTo(methodOn(StrudentController.class).findAllStudents()).withSelfRel());
-
-        return ResponseEntity.ok(collectionModel);
+        students.forEach(this::addLinksToExercise); // Use o seu método de links já existente
+        return ResponseEntity.ok(assembler.toModel(students));
     }
 
     @PutMapping(produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE },
@@ -101,6 +101,6 @@ public class StrudentController implements StrudentControllerDocs {
                 .deleteStudent(student.getId())).withRel("delete"));
 
         student.add(linkTo(methodOn(StrudentController.class)
-                .findAllStudents()).withRel("all-exercises"));
+                .findAllStudents(1, 12)).withRel("all-exercises"));
     }
 }

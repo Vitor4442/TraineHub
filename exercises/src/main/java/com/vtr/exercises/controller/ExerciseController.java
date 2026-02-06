@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,15 +31,15 @@ public class ExerciseController implements ExerciseControllerDocs {
 
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Override
-    public ResponseEntity<Page<ExerciseDTO>> findAllExercises(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                                              @RequestParam(value = "size", defaultValue = "12") Integer size,
-                                                              @RequestParam(value = "direction", defaultValue = "asc") String direction
+    public ResponseEntity<PagedModel<EntityModel<ExerciseDTO>>> findAllExercises(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                                                 @RequestParam(value = "size", defaultValue = "12") Integer size,
+                                                                                 @RequestParam(value = "direction", defaultValue = "asc") String direction
     ) {
         var sortDirection =  "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
         Page<ExerciseDTO> exercises = service.getAllExercises(pageable);
         exercises.forEach(this::addLinksToExercise);
-        return ResponseEntity.ok(exercises);
+        return ResponseEntity.ok(assembler.toModel(exercises));
     }
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},

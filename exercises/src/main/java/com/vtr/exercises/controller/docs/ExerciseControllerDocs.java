@@ -40,7 +40,8 @@ public interface ExerciseControllerDocs {
             @ApiResponse(description = "BadRequest", responseCode = "400", content = @Content)
     })
     ResponseEntity<Page<ExerciseDTO>> findAllExercises(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                                                         @RequestParam(value = "size", defaultValue = "12") Integer size);
+                                                                         @RequestParam(value = "size", defaultValue = "12") Integer size,@RequestParam(value = "direction", defaultValue = "asc") String directtion)
+            ;
 
     @Operation(summary = "Atualizar e Exercicio", description = "Essa requisição ira Atualizar o exercicio selecionado", tags = {"Exercicios"}, responses = {
             @ApiResponse(description = "Success",

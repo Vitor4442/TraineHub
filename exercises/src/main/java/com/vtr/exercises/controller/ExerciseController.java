@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +30,11 @@ public class ExerciseController implements ExerciseControllerDocs {
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Override
     public ResponseEntity<Page<ExerciseDTO>> findAllExercises(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                                              @RequestParam(value = "size", defaultValue = "12") Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
+                                                              @RequestParam(value = "size", defaultValue = "12") Integer size,
+                                                              @RequestParam(value = "direction", defaultValue = "asc") String direction
+    ) {
+        var sortDirection =  "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
         Page<ExerciseDTO> exercises = service.getAllExercises(pageable);
         exercises.forEach(this::addLinksToExercise);
         return ResponseEntity.ok(exercises);
@@ -76,6 +81,6 @@ public class ExerciseController implements ExerciseControllerDocs {
                 .deletedExercise(exercise.getId())).withRel("delete"));
 
         exercise.add(linkTo(methodOn(ExerciseController.class)
-                .findAllExercises(0, 12)).withRel("all-exercises"));
+                .findAllExercises(0, 12, "asc")).withRel("all-exercises"));
     }
 }

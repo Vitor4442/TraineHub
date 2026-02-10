@@ -18,8 +18,8 @@ public class Workout {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "exercise_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exercise_id", nullable = false)
     private Exercises exercises;
 
     @Column(nullable = false)

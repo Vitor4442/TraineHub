@@ -53,4 +53,10 @@ public class StudentService {
         repository.disableStudent(id);
         return mapper.toDTo(student);
     }
+
+    @Transactional(readOnly = true)
+    public Page<StudentDTO> findByName(String name, Pageable pageable){
+        var student = repository.findStudentByName(name, pageable);
+        return student.map(mapper::toDTo);
+    }
 }

@@ -1,6 +1,6 @@
 package com.vtr.exercises.controller;
 
-import com.vtr.exercises.controller.docs.StrudentControllerDocs;
+import com.vtr.exercises.controller.docs.StudentControllerDocs;
 import com.vtr.exercises.dto.StudentDTO;
 import com.vtr.exercises.model.Student;
 import com.vtr.exercises.service.StudentService;
@@ -24,7 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/alunos")
 @RequiredArgsConstructor
 @Tag(name = "Students", description = "Endpoints for manager students")
-public class StrudentController implements StrudentControllerDocs {
+public class StudentController implements StudentControllerDocs {
 
     private final StudentService service;
     private final PagedResourcesAssembler<StudentDTO> assembler;
@@ -52,6 +52,20 @@ public class StrudentController implements StrudentControllerDocs {
         students.forEach(this::addLinksToExercise);
         return ResponseEntity.ok(assembler.toModel(students));
     }
+
+    @GetMapping(
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            value = "/nome/{name}"
+    )
+    @Override
+    public ResponseEntity<PagedModel<EntityModel<StudentDTO>>> findByName(@PathVariable("name") String name, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "size", defaultValue = "12") Integer size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<StudentDTO> students = service.findByName(name, pageable);
+
+        students.forEach(this::addLinksToExercise);
+        return ResponseEntity.ok(assembler.toModel(students));
+    }
+
 
     @PutMapping(produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE },
@@ -91,16 +105,16 @@ public class StrudentController implements StrudentControllerDocs {
     }
 
     private void addLinksToExercise(StudentDTO student) {
-        student.add(linkTo(methodOn(StrudentController.class)
+        student.add(linkTo(methodOn(StudentController.class)
                 .findByIdStudent(student.getId())).withSelfRel());
 
-        student.add(linkTo(methodOn(StrudentController.class)
+        student.add(linkTo(methodOn(StudentController.class)
                 .putStudent(student, student.getId())).withRel("update"));
 
-        student.add(linkTo(methodOn(StrudentController.class)
+        student.add(linkTo(methodOn(StudentController.class)
                 .deleteStudent(student.getId())).withRel("delete"));
 
-        student.add(linkTo(methodOn(StrudentController.class)
+        student.add(linkTo(methodOn(StudentController.class)
                 .findAllStudents(1, 12)).withRel("all-exercises"));
     }
 }

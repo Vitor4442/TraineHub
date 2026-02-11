@@ -37,11 +37,13 @@ public class ExerciseService {
         return mapper.toDTO(repository.save(exercises));
     }
 
+    @Transactional
     public void deleteExercise(Long id) {
         Exercises exercises = repository.findById(id).orElseThrow(() -> new RuntimeException("Exercise not found"));
         repository.delete(exercises);
     }
 
+    @Transactional(readOnly = true)
     public ExerciseDTO findById(Long id) {
         Exercises exercises = repository.findById(id).orElseThrow(() -> new RuntimeException("Exercise not found"));
         return mapper.toDTO(exercises);

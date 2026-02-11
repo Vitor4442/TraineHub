@@ -1,5 +1,6 @@
 package com.vtr.exercises.controller;
 
+import com.vtr.exercises.dto.ExerciseDTO;
 import com.vtr.exercises.dto.WorkoutDTO;
 import com.vtr.exercises.service.WorkoutService;
 import lombok.RequiredArgsConstructor;
@@ -42,5 +43,11 @@ public class WorkoutController {
     private void addLinksToExercise(WorkoutDTO workout) {
         workout.add(linkTo(methodOn(WorkoutController.class)
                 .addWorkout(workout)).withRel("criar workout"));
+    }
+
+    @PutMapping ("/atualizar/{id}")
+    public ResponseEntity<WorkoutDTO> putWorkout (@PathVariable(value = "id") Long id, WorkoutDTO workoutDTO){
+        WorkoutDTO workout = workoutService.attWorkout(id,workoutDTO);
+        return ResponseEntity.status(201).body(workout);
     }
 }

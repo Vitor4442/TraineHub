@@ -2,7 +2,6 @@ package com.vtr.exercises.controller;
 
 import com.vtr.exercises.controller.docs.StudentControllerDocs;
 import com.vtr.exercises.dto.StudentDTO;
-import com.vtr.exercises.model.Student;
 import com.vtr.exercises.service.StudentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +40,7 @@ public class StudentController implements StudentControllerDocs {
         return ResponseEntity.status(201).body(savedStudent);
     }
 
-    
+
     @GetMapping(
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Override

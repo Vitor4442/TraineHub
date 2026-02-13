@@ -16,6 +16,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -70,6 +71,19 @@ public class ExerciseController implements ExerciseControllerDocs {
         ExerciseDTO exercise = service.findById(id);
         addLinksToExercise(exercise);
         return ResponseEntity.ok(exercise);
+    }
+
+    @PatchMapping(
+            value = "/{id}/video",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = { MediaType.APPLICATION_JSON_VALUE }
+    )
+    public ResponseEntity<ExerciseDTO> uploadVideo(
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file) {
+        ExerciseDTO updatedExercise = service.uploadVideoToExercise(id, file);
+        addLinksToExercise(updatedExercise);
+        return ResponseEntity.ok(updatedExercise);
     }
 
     private void addLinksToExercise(ExerciseDTO exercise) {

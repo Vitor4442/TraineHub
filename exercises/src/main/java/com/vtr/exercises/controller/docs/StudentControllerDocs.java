@@ -54,7 +54,8 @@ public interface StudentControllerDocs {
     )
     ResponseEntity<PagedModel<EntityModel<StudentDTO>>> findAllStudents(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "12") Integer size
+            @RequestParam(value = "size", defaultValue = "12") Integer size,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction
     );
 
     @Operation(

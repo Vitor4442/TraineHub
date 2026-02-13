@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -45,10 +46,11 @@ public class StudentController implements StudentControllerDocs {
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Override
     public ResponseEntity<PagedModel<EntityModel<StudentDTO>>> findAllStudents(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                                                               @RequestParam(value = "size", defaultValue = "12") Integer size){
-        Pageable pageable = PageRequest.of(page, size);
+                                                                               @RequestParam(value = "size", defaultValue = "12") Integer size,
+                                                                               @RequestParam(value = "direction", defaultValue = "asc") String direction){
+        var sortDirection =  "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
         Page<StudentDTO> students = service.findAllStudents(pageable);
-
         students.forEach(this::addLinksToExercise);
         return ResponseEntity.ok(assembler.toModel(students));
     }
@@ -61,7 +63,6 @@ public class StudentController implements StudentControllerDocs {
     public ResponseEntity<PagedModel<EntityModel<StudentDTO>>> findByName(@PathVariable("name") String name, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "size", defaultValue = "12") Integer size){
         Pageable pageable = PageRequest.of(page, size);
         Page<StudentDTO> students = service.findByName(name, pageable);
-
         students.forEach(this::addLinksToExercise);
         return ResponseEntity.ok(assembler.toModel(students));
     }
@@ -115,6 +116,6 @@ public class StudentController implements StudentControllerDocs {
                 .deleteStudent(student.getId())).withRel("delete"));
 
         student.add(linkTo(methodOn(StudentController.class)
-                .findAllStudents(1, 12)).withRel("all-exercises"));
+                .findAllStudents(1, 12, "asc")).withRel("all-students"));
     }
 }

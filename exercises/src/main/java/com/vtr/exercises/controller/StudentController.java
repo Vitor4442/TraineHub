@@ -35,7 +35,7 @@ public class StudentController implements StudentControllerDocs {
             consumes = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE },
             value = "/cadastros" )
     @Override
-    public ResponseEntity<StudentDTO> addStudent(@RequestBody Student student){
+    public ResponseEntity<StudentDTO> addStudent(@RequestBody StudentDTO student){
         StudentDTO savedStudent = service.addStudent(student);
         addLinksToExercise(savedStudent);
         return ResponseEntity.status(201).body(savedStudent);

@@ -18,8 +18,8 @@ public class StudentService {
     private final StudentMapper mapper;
 
     @Transactional
-    public StudentDTO addStudent(Student student){
-       return mapper.toDTo(repository.save(student));
+    public StudentDTO addStudent(StudentDTO studentDTO){
+       return mapper.toDTo( repository.save(mapper.toEntity(studentDTO)));
     }
 
     @Transactional(readOnly = true)

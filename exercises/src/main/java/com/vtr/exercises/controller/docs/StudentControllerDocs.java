@@ -33,7 +33,7 @@ public interface StudentControllerDocs {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
             }
     )
-    ResponseEntity<StudentDTO> addStudent(@RequestBody Student student);
+    ResponseEntity<StudentDTO> addStudent(@RequestBody StudentDTO student);
 
     @Operation(
             summary = "Listar alunos",

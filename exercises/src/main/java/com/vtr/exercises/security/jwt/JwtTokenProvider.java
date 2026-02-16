@@ -52,14 +52,13 @@ public class JwtTokenProvider {
     }
 
     private String getRefreshToken(String email, List<String> roles, Date now) {
-        Date refreshTokenValidity = new Date(now.getTime() + validityInMiliseconds);
+        Date refreshTokenValidity = new Date(now.getTime() + (validityInMiliseconds * 3));
         return JWT.create()
                 .withClaim("roles", roles)
                 .withIssuedAt(now)
                 .withExpiresAt(refreshTokenValidity)
                 .withSubject(email)
-                .sign(algorithm)
-                .toString();
+                .sign(algorithm);
     }
 
     private String getAcessToken(String email, List<String> roles, Date now, Date validity) {
@@ -70,8 +69,7 @@ public class JwtTokenProvider {
                 .withExpiresAt(validity)
                 .withSubject(email)
                 .withIssuer(issueUrl)
-                .sign(algorithm)
-                .toString();
+                .sign(algorithm);
     }
 
     public Authentication getAuthentication(String token){

@@ -1,8 +1,6 @@
-package com.vtr.exercises.dto;
+package com.vtr.exercises.dto.security;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.hateoas.RepresentationModel;
 import com.vtr.exercises.model.Gender;
 
 import java.time.LocalDate;

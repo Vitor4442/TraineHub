@@ -4,6 +4,7 @@ import com.vtr.exercises.*;
 import com.vtr.exercises.exception.ExceptionResponse;
 import com.vtr.exercises.exception.FileNotFoundException;
 import com.vtr.exercises.exception.FileStorageException;
+import com.vtr.exercises.exception.InvalidJWTAuthenctication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,5 +35,14 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
                 ex.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InvalidJWTAuthenctication.class)
+    public final ResponseEntity<ExceptionResponse> handleInvalidJWTAuthenticationExceptions (Exception ex, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 }

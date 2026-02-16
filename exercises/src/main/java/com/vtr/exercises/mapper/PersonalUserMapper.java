@@ -1,7 +1,7 @@
 package com.vtr.exercises.mapper;
 
-import com.vtr.exercises.dto.PersonalUserRequestDTO;
-import com.vtr.exercises.dto.PersonalUserResponseDTO;
+import com.vtr.exercises.dto.security.PersonalUserRequestDTO;
+import com.vtr.exercises.dto.security.PersonalUserResponseDTO;
 import com.vtr.exercises.model.Permission;
 import com.vtr.exercises.model.PersonalUsers;
 import org.mapstruct.Mapper;

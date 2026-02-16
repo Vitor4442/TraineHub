@@ -1,4 +1,4 @@
-package com.vtr.exercises.dto;
+package com.vtr.exercises.dto.security;
 
 import com.vtr.exercises.model.Gender;
 import jakarta.validation.constraints.Email;

@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "personal_users")
-public class personalUsers implements UserDetails, Serializable {
+public class PersonalUsers implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -230,5 +230,5 @@ public class personalUsers implements UserDetails, Serializable {
         this.permissions = permissions;
     }
 
-    public personalUsers () {}
+    public PersonalUsers() {}
 }

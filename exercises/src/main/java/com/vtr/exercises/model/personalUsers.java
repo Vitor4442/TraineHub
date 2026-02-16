@@ -44,9 +44,10 @@ public class personalUsers {
     @Column(length = 20)
     private String phone;
 
+    @Enumerated(EnumType.STRING)
     @NotBlank(message = "role obrigatoria")
     @Column( length = 30)
-    private String role;
+    private Role role;
 
     @Builder.Default
     private Boolean active = true;
@@ -54,8 +55,9 @@ public class personalUsers {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private String gender;
+    private Gender gender;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

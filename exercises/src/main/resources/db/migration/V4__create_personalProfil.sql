@@ -1,6 +1,6 @@
 CREATE TABLE personal_users (
                                 id              BIGSERIAL PRIMARY KEY,
-                                owner_id        BIGINT REFERENCES,
+                                owner_id        BIGINT,
                                 name            VARCHAR(150) NOT NULL,
                                 email           VARCHAR(150) NOT NULL UNIQUE,
                                 password        VARCHAR(150) NOT NULL,

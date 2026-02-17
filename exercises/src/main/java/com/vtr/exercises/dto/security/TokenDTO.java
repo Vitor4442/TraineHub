@@ -19,7 +19,4 @@ public class TokenDTO implements Serializable {
     private Date expiration;
     private String acessToken;
     private String refreshToken;
-
-    public TokenDTO(String email, boolean b, Date now, Date validity, String acessToken, String refreshToken) {
-    }
 }

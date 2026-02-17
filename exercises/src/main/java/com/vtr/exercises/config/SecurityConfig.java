@@ -44,6 +44,7 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         JwtTokenFilter filter = new JwtTokenFilter(jwtTokenProvider);
         return http

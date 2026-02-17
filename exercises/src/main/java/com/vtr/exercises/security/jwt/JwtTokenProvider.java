@@ -9,13 +9,13 @@ import com.vtr.exercises.exception.InvalidJWTAuthenctication;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Base64;
@@ -88,11 +88,10 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest request){
         String bearerToken = request.getHeader("Authorization");
 
-        if(StringUtils.isEmpty(bearerToken) && bearerToken.startsWith("Bearer ")){
+        if(StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith("Bearer ")){
             return bearerToken.substring("Bearer ".length());
-        } else {
-            throw new InvalidJWTAuthenctication("Invalid JWT Token");
         }
+        return null;
     }
 
     public boolean validateToken(String token){

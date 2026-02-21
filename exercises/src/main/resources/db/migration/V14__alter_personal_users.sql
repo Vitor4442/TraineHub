@@ -1,0 +1,2 @@
+ALTER TABLE personal_users
+ALTER COLUMN gender TYPE VARCHAR(20);

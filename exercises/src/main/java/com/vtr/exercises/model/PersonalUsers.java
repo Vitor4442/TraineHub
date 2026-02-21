@@ -57,12 +57,15 @@ public class PersonalUsers implements UserDetails, Serializable {
     @Column(length = 20)
     private Gender gender;
 
+    @Builder.Default
     @Column(name = "account_non_expired")
     private boolean accountNonExpired = true;
 
+    @Builder.Default
     @Column(name = "account_non_locked")
     private boolean accountNonLocked = true;
 
+    @Builder.Default
     @Column(name = "credentials_non_expired")
     private boolean credentialsNonExpired = true;
 

@@ -47,5 +47,11 @@ public class AuthController {
         return StringUtils.isBlank(email) || StringUtils.isBlank(refreshToken);
     }
 
+    @Operation(summary = "Cria um usuario")
+    @PostMapping("/createUser")
+    public ResponseEntity<AccountCredentialsDTO> CreateUser (@RequestBody AccountCredentialsDTO user){
+        return ResponseEntity.ok(authService.create(user));
+    }
+
 
 }

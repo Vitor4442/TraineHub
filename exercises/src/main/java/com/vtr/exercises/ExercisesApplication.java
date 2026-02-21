@@ -15,7 +15,7 @@ public class ExercisesApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ExercisesApplication.class, args);
 
-		generateHashedPassword();
+		//generateHashedPassword();
 	}
 
 	private static void generateHashedPassword() {

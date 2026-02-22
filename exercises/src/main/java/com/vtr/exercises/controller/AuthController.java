@@ -1,7 +1,7 @@
 package com.vtr.exercises.controller;
 
+import com.vtr.exercises.controller.docs.AuthDocs;
 import com.vtr.exercises.dto.security.AccountCredentialsDTO;
-import com.vtr.exercises.dto.security.TokenDTO;
 import com.vtr.exercises.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthDocs {
 
     private final AuthService authService;
 
-    @Operation(summary = "Authentificação do usuario e retorna o token")
+    @Override
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@RequestBody AccountCredentialsDTO credentials){
         if(credentialsIsInvalid(credentials)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
@@ -32,7 +32,7 @@ public class AuthController {
         return credentials == null || StringUtils.isBlank(credentials.getPassword()) || StringUtils.isBlank(credentials.getEmail());
     }
 
-    @Operation(summary = "Re authentifica o usuario e retorna o token")
+    @Override
     @PutMapping("/refresh/{email}")
     public ResponseEntity<?> refresh (@PathVariable String email, @RequestHeader("Authorization") String refreshToken){
 
@@ -47,9 +47,9 @@ public class AuthController {
         return StringUtils.isBlank(email) || StringUtils.isBlank(refreshToken);
     }
 
-    @Operation(summary = "Cria um usuario")
+    @Override
     @PostMapping("/createUser")
-    public ResponseEntity<AccountCredentialsDTO> CreateUser (@RequestBody AccountCredentialsDTO user){
+    public ResponseEntity<AccountCredentialsDTO> createUser (@RequestBody AccountCredentialsDTO user){
         return ResponseEntity.ok(authService.create(user));
     }
 

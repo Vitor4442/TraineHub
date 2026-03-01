@@ -1,0 +1,1 @@
+ALTER TABLE personal_users DROP COLUMN IF EXISTS role;

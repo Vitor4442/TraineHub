@@ -5,6 +5,7 @@ import com.vtr.exercises.dto.StudentDTO;
 import com.vtr.exercises.service.StudentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,9 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -52,6 +56,12 @@ public class StudentController implements StudentControllerDocs {
         Page<StudentDTO> students = service.findAllStudents(pageable);
         students.forEach(this::addLinksToExercise);
         return ResponseEntity.ok(assembler.toModel(students));
+    }
+
+    @PostMapping
+    @Override
+    public List<StudentDTO> massCreation(MultipartFile file) throws BadRequestException {
+        return service.massCreation(file);
     }
 
     @GetMapping(

@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+@Component
 public class XlsxImporter implements FileImporter {
 
     @Override

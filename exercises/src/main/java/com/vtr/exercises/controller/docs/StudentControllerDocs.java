@@ -7,12 +7,16 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.apache.coyote.BadRequestException;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface StudentControllerDocs {
 
@@ -57,6 +61,24 @@ public interface StudentControllerDocs {
             @RequestParam(value = "size", defaultValue = "12") Integer size,
             @RequestParam(value = "direction", defaultValue = "asc") String direction
     );
+
+    @Operation(
+            summary = "Exportar alunos em massas",
+            description = "Exportar alunos em mass com XLSX ou CSV",
+            tags = {"Alunos"},
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Lista de alunos retornada com sucesso",
+                            content = @Content(
+                                   schema = @Schema(implementation = StudentDTO.class)
+                            )
+                    ),
+                    @ApiResponse(responseCode = "204", description = "Nenhum aluno encontrado", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+            }
+    )
+    List<StudentDTO> massCreation(MultipartFile file) throws BadRequestException;
 
     @Operation(
             summary = "Buscar alunos pelo nome",

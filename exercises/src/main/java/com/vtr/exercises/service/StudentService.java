@@ -1,14 +1,24 @@
 package com.vtr.exercises.service;
 
 import com.vtr.exercises.dto.StudentDTO;
+import com.vtr.exercises.exception.FileStorageException;
+import com.vtr.exercises.file.importer.contract.FileImporter;
+import com.vtr.exercises.file.importer.factory.FileImporterFactory;
 import com.vtr.exercises.mapper.StudentMapper;
 import com.vtr.exercises.model.Student;
 import com.vtr.exercises.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +26,7 @@ public class StudentService {
 
     private final StudentRepository repository;
     private final StudentMapper mapper;
+    private final FileImporterFactory importer;
 
     @Transactional
     public StudentDTO addStudent(StudentDTO studentDTO){
@@ -26,6 +37,25 @@ public class StudentService {
     public Page<StudentDTO> findAllStudents(Pageable pageable){
         var student = repository.findAll(pageable);
         return student.map(mapper::toDTo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentDTO> massCreation (MultipartFile file) throws BadRequestException {
+        if(file.isEmpty()) throw new BadRequestException("Please set a Valid File!");
+
+        try(InputStream inputStream = file.getInputStream()){
+            String filename = Optional.ofNullable(file.getOriginalFilename()).orElseThrow(() -> new BadRequestException("File name cannot be null"));
+            FileImporter importer = this.importer.getImporter(filename);
+            List<Student> entities = importer.importFile(inputStream).stream().map( dto -> repository.save(mapper.toEntity(dto))).toList();
+
+            return entities.stream().map(mapper::toDTo).toList();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new FileStorageException("Error processing the file");
+        }
+
     }
 
     @Transactional

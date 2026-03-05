@@ -58,9 +58,9 @@ public class StudentController implements StudentControllerDocs {
         return ResponseEntity.ok(assembler.toModel(students));
     }
 
-    @PostMapping
+    @PostMapping (value = "/massCreation")
     @Override
-    public List<StudentDTO> massCreation(MultipartFile file) throws BadRequestException {
+    public List<StudentDTO> massCreation(@RequestParam("file") MultipartFile file) throws BadRequestException {
         return service.massCreation(file);
     }
 

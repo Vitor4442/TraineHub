@@ -39,7 +39,6 @@ public class StudentService {
         return student.map(mapper::toDTo);
     }
 
-    @Transactional(readOnly = true)
     public List<StudentDTO> massCreation (MultipartFile file) throws BadRequestException {
         if(file.isEmpty()) throw new BadRequestException("Please set a Valid File!");
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +15,6 @@ public class FichaDTO {
     private Long studentId;
     private String nome;
     private String descricao;
-    private Timestamp created_at;
-    private Timestamp updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

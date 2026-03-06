@@ -1,11 +1,10 @@
 package com.vtr.exercises.file.importer.factory;
 
 import com.vtr.exercises.file.importer.contract.FileImporter;
-import com.vtr.exercises.file.importer.impl.CsvImporter;
-import com.vtr.exercises.file.importer.impl.XlsxImporter;
+import com.vtr.exercises.file.importer.implStudent.CsvImporter;
+import com.vtr.exercises.file.importer.implStudent.XlsxImporter;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 

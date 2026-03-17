@@ -15,7 +15,7 @@ public class FileExporterFactory {
 
     private final ApplicationContext context;
 
-    public FileExporter getImporter(String acceptHeader) throws Exception {
+    public FileExporter getExport(String acceptHeader) throws Exception {
 
         if(acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_XLSX_VALUE)){
            return context.getBean(XlsxExporter.class);

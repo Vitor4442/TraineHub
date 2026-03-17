@@ -1,16 +1,21 @@
 package com.vtr.exercises.controller.docs;
 
 import com.vtr.exercises.dto.StudentDTO;
+import com.vtr.exercises.file.exporter.MediaTypes;
 import com.vtr.exercises.model.Student;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.coyote.BadRequestException;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,8 +68,30 @@ public interface StudentControllerDocs {
     );
 
     @Operation(
-            summary = "Exportar alunos em massas",
-            description = "Exportar alunos em mass com XLSX ou CSV",
+            summary = "Exporta os alunos para uma planilha",
+            description = "Retorna umaa planilha  de todos os alunos cadastrados.",
+            tags = {"Alunos"},
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "",
+                            content = {@Content(mediaType = MediaTypes.APPLICATION_XLSX_VALUE),
+                                    @Content(mediaType = MediaTypes.APPLICATION_CSV_VALUE)
+                            }),
+                    @ApiResponse(responseCode = "204", description = "Nenhum aluno encontrado", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+            }
+    )
+    ResponseEntity<Resource> exportPage(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "12") Integer size,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction,
+            HttpServletRequest request
+    ) throws Exception;
+
+    @Operation(
+            summary = "importa alunos em massas",
+            description = "importar alunos em mass com XLSX ou CSV",
             tags = {"Alunos"},
             responses = {
                     @ApiResponse(

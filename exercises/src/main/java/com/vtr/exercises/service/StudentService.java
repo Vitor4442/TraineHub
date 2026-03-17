@@ -2,11 +2,14 @@ package com.vtr.exercises.service;
 
 import com.vtr.exercises.dto.StudentDTO;
 import com.vtr.exercises.exception.FileStorageException;
+import com.vtr.exercises.file.exporter.contract.FileExporter;
+import com.vtr.exercises.file.exporter.factory.FileExporterFactory;
 import com.vtr.exercises.file.importer.contract.FileImporter;
 import com.vtr.exercises.file.importer.factory.FileImporterFactory;
 import com.vtr.exercises.mapper.StudentMapper;
 import com.vtr.exercises.model.Student;
 import com.vtr.exercises.repository.StudentRepository;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -27,6 +30,7 @@ public class StudentService {
     private final StudentRepository repository;
     private final StudentMapper mapper;
     private final FileImporterFactory importer;
+    private final FileExporterFactory exporter;
 
     @Transactional
     public StudentDTO addStudent(StudentDTO studentDTO){
@@ -37,6 +41,15 @@ public class StudentService {
     public Page<StudentDTO> findAllStudents(Pageable pageable){
         var student = repository.findAll(pageable);
         return student.map(mapper::toDTo);
+    }
+
+    public Resource exportPage (Pageable pageable, String acceptHeader) throws Exception {
+        var student = repository.findAll(pageable);
+        var dto = student.map(mapper::toDTo).getContent();
+
+        FileExporter exporter = this.exporter.getExport(acceptHeader);
+
+        return exporter.exportFile(dto);
     }
 
     public List<StudentDTO> massCreation (MultipartFile file) throws BadRequestException {

@@ -2,8 +2,11 @@ package com.vtr.exercises.controller;
 
 import com.vtr.exercises.controller.docs.StudentControllerDocs;
 import com.vtr.exercises.dto.StudentDTO;
+import com.vtr.exercises.file.exporter.MediaTypes;
 import com.vtr.exercises.service.StudentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +60,35 @@ public class StudentController implements StudentControllerDocs {
         Page<StudentDTO> students = service.findAllStudents(pageable);
         students.forEach(this::addLinksToExercise);
         return ResponseEntity.ok(assembler.toModel(students));
+    }
+
+    @GetMapping(value = "/exportPage", produces = {
+            MediaTypes.APPLICATION_XLSX_VALUE,
+            MediaTypes.APPLICATION_CSV_VALUE
+    })
+    @Override
+     public ResponseEntity<Resource> exportPage(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "12") Integer size,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction,
+            HttpServletRequest request
+    ) throws Exception {
+        var sortDirection =  "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
+
+        String acceptHeader = request.getHeader(HttpHeaders.ACCEPT);
+
+        Resource file = service.exportPage(pageable, acceptHeader);
+
+        var contentType = acceptHeader != null ? acceptHeader : "application/octet-stream";
+        var fileExtension = MediaTypes.APPLICATION_XLSX_VALUE.equalsIgnoreCase(acceptHeader) ? ".xlsx" : ".csv";
+        var fileName = "estudantes" + fileExtension;
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "atachment; filename=\"" + fileName + "\""
+                ).body(file);
     }
 
     @PostMapping (value = "/massCreation")

@@ -5,7 +5,7 @@ import com.vtr.exercises.dto.StudentDTO;
 import com.vtr.exercises.file.exporter.MediaTypes;
 import com.vtr.exercises.service.StudentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import org.springframework.core.io.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
